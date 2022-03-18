@@ -13,7 +13,8 @@ library(flexdashboard)
 library(influxdbr)
 # install.packages("remotes")
 #remotes::install_github("dleutnant/influxdbr")
-
+library(leaflet)
+library(tidyverse)
 ```
 
 Column {data-width=650}
@@ -22,7 +23,12 @@ Column {data-width=650}
 ### Chart A
 
 ```{r}
+df <- data.frame(lat= runif(30, min = 48.58, max = 48.68), long=runif(30, min = 6.166, max = 6.17))
 
+df %>%
+  leaflet( width = 900) %>%
+  addTiles() %>%
+  addMarkers(clusterOptions = markerClusterOptions(), popup = "Hi")
 ```
 
 Column {data-width=350}
