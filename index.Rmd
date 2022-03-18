@@ -1,0 +1,42 @@
+---
+title: "Smart Collector INEDIT"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+
+# Package for reading InfluxDB
+library(influxdbr)
+# install.packages("remotes")
+#remotes::install_github("dleutnant/influxdbr")
+
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+
+```
+
+### Chart C
+
+```{r}
+
+```
+
