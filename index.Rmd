@@ -15,6 +15,7 @@ library(flexdashboard)
 #remotes::install_github("dleutnant/influxdbr")
 library(leaflet)
 library(tidyverse)
+source('R/Places.R')
 ```
 
 Column {data-width=650}
@@ -24,31 +25,32 @@ Column {data-width=650}
 
 ```{r}
 
-Places <- 
-   tribble(~Place, ~Lat, ~Long, ~Type,
-           "Green Fablab", 48.69354778372888, 6.199223427009557, "Education",
-           "ENSGSI", 48.69508092375094, 6.194086052304349, "Education",
-           "ENSGM",  48.695897093034866, 6.193120953312192, "Education",
-           "MJC Bazin", 48.69739157499988, 6.194576095053032, "Association",
-           "SNN", 48.693487765703644, 6.2016121881502375, "Sport club",
-           "Curves", 48.69812957589187, 6.2005961050660385, "Sport club",
-           "VNF", 48.69199572042067, 6.1951544736381745, "Enterprise",
-           "MAIF", 48.693154051864724, 6.196146452736703, "Enterprise"
-   )
 
-my_icons<- awesomeIcons(
-  icon = 'h-square',
-  iconColor = '#ffffff',
-  library = 'fa',
-  markerColor = 'red'
-                      )
+leafIcons <- icons(
+  iconUrl = ifelse(Places$Type == "Education",
+    "https://leafletjs.com/examples/custom-icons/leaf-green.png",
+    "https://leafletjs.com/examples/custom-icons/leaf-red.png"
+  ),
+  iconWidth = 38, iconHeight = 95,
+  iconAnchorX = 22, iconAnchorY = 94,
+  shadowUrl = "https://leafletjs.com/examples/custom-icons/leaf-shadow.png",
+  shadowWidth = 50, shadowHeight = 64,
+  shadowAnchorX = 4, shadowAnchorY = 62
+)
 
 
 
-leaflet() %>%
+
+leaflet(Places) %>%
    addTiles() %>%
-   setView(lat = Places$Lat[1], lng = Places$Long[1], zoom = 20) %>%  
-   addMarkers(lat = Places$Lat, lng = Places$Long) 
+   setView(lng = Places$Long[1], lat = Places$Lat[1], zoom = 18) %>%  
+   #addMarkers(lng = Places$Long, lat = Places$Lat, group = Places$Place) %>% 
+   #addPopups(lng = Places$Long, lat = Places$Lat,  popup = Places$Place) %>% 
+   addScaleBar(position = "bottomleft") %>% 
+   addAwesomeMarkers( lng = Places$Long, lat = Places$Lat, 
+                      label = Places$Place, 
+                      popup = Places$Type,
+                      icon = leafIcons)
 
 #addCircleMarkers  addMarkers(clusterOptions = markerClusterOptions(), popup = "Hi")
 
