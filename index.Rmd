@@ -24,59 +24,63 @@ Column {data-width=650}
 ### Deployment of Smart Collectors
 
 ```{r}
-
-
-leafIcons <- icons(
-  iconUrl = ifelse(Places$Type == "Education",
-    "https://leafletjs.com/examples/custom-icons/leaf-green.png",
-    "https://leafletjs.com/examples/custom-icons/leaf-red.png"
-  ),
-  iconWidth = 38, iconHeight = 95,
-  iconAnchorX = 22, iconAnchorY = 94,
-  shadowUrl = "https://leafletjs.com/examples/custom-icons/leaf-shadow.png",
-  shadowWidth = 50, shadowHeight = 64,
-  shadowAnchorX = 4, shadowAnchorY = 62
-)
-
-
+# 
+# iconSet <- awesomeIconList(
+#   Home = makeAwesomeIcon(icon = "home", library = "fa", markerColor = 'green'),
+#   Education = ?makeAwesomeIcon(icon = "school", library = "fa", markerColor = 'blue'),
+#   Association = makeAwesomeIcon(icon = "shop", library = "fa", markerColor = 'grey'),
+#   Sport = makeAwesomeIcon(icon = "dumbbell", library = "fa",  markerColor = 'orange')
+# )
 
 
 leaflet(Places) %>%
-   addTiles() %>%
-   setView(lng = Places$Long[1], lat = Places$Lat[1], zoom = 18) %>%  
-   #addMarkers(lng = Places$Long, lat = Places$Lat, group = Places$Place) %>% 
-   #addPopups(lng = Places$Long, lat = Places$Lat,  popup = Places$Place) %>% 
-   addScaleBar(position = "bottomleft") %>% 
-   addAwesomeMarkers( lng = Places$Long, lat = Places$Lat, 
-                      label = Places$Place, 
-                      popup = Places$Type,
-                      icon = leafIcons)
+ addTiles() %>%
+ setView(lng = Places$long[8], lat = Places$lat[1], zoom = 18)%>%
+   # addAwesomeMarkers(lng = INEDIT$long, lat = INEDIT$lat,
+   #                    label = INEDIT$Place,
+   #                    popup = INEDIT$Type,
+   #                     icon = iconSet
+   #    )
+   addMarkers(lng = Places$long, lat = Places$lat) %>% 
+   #addPopups(lng = INEDIT$long, lat = INEDIT$lat) %>% 
+   addScaleBar(position = "bottomleft") 
 
-#addCircleMarkers  addMarkers(clusterOptions = markerClusterOptions(), popup = "Hi")
-
-
-
-```
-
-
-```{r}
-#library(readr)
-#data <- read_csv(file = "data/Nancy.csv")
-#names(data)
-
-
-#data <- data %>% filter(code_departement == 54)
 
 
 ```
+
+
 
 Column {data-width=350}
 -----------------------------------------------------------------------
 
 ### Chart B
 
-```{r}
+```{r, fig.width=8, fig.height=6, out.width='90%'}
+Recovery %>% 
+   mutate(Year= format(Date, "%Y"),
+          Month= format(Date, "%B")) %>% 
+   select(Year, Month, Quantity) %>% 
+   group_by(Year, Month) %>% 
+   summarise(Collected = sum(Quantity)) %>% 
+   mutate(Month=factor(Month, levels = month.name)) %>% 
+   ggplot()+
+   aes(x = Month, y = Collected, fill = Year) + 
+      geom_bar(stat = "identity") +
+   scale_fill_brewer(palette="Set2")+
+    labs(title = "Recovery of Plastic of wastes",
+       subtitle = "3D Printing Recycled Plastic Demonstrator",
+       x = "Months",
+       y = "Plastic collected [kilograms]",
+       caption = paste("Data Source update by UL on",
+                       format(Sys.Date(), "%b/%y"),
+                       sep = ":  "
+                       )
+       )+
+  theme_minimal(base_size = 15, base_family = "Palatino") +
+   theme(legend.position="bottom")
 
+#ggsave("Results/Recovery.jpg", width = 8, height = 6, dpi = "print")
 ```
 
 ### Chart C
